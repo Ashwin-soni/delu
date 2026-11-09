@@ -5,11 +5,9 @@ import confetti from "canvas-confetti";
 import {
   Send,
   Mail,
-  Phone,
   Clock,
   Sparkles,
   CheckCircle,
-  MessageSquare,
   Globe,
 } from "lucide-react";
 
@@ -26,6 +24,7 @@ export default function ContactSection() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const servicesList = [
     "Web Development",
@@ -52,16 +51,30 @@ export default function ContactSection() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
+    setSubmitError("");
 
-    // Simulate swift submission
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          services: selectedServices,
+          budget,
+        }),
+      });
+
+      const result: { error?: string } = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "We couldn't submit your inquiry. Please try again.");
+      }
+
       setSubmitted(true);
 
-      // Trigger celebratory confetti in signature Delulogic gold & amber colors
       try {
         confetti({
           particleCount: 120,
@@ -72,7 +85,15 @@ export default function ContactSection() {
       } catch (err) {
         console.error("Confetti trigger:", err);
       }
-    }, 600);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "We couldn't submit your inquiry. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -176,13 +197,16 @@ export default function ContactSection() {
                     Delulogic Engine Engaged!
                   </h3>
                   <p className="text-sm sm:text-base text-[#a8a29e] max-w-md mx-auto">
-                    Thank you, <strong className="text-[#facc15]">{formData.name}</strong>. Ashwin Soni and Anirudh Soni have received your project details and will email you back within 6 hours.
+                    Thank you, <strong className="text-[#facc15]">{formData.name}</strong>. Your project details have been submitted. Ashwin Soni and Anirudh Soni will review them and email you back within 6 hours.
                   </p>
                   <button
                     type="button"
                     onClick={() => {
                       setSubmitted(false);
                       setFormData({ name: "", email: "", website: "", details: "" });
+                      setSelectedServices(["Web Development"]);
+                      setBudget("$3k - $7k");
+                      setSubmitError("");
                     }}
                     className="mt-6 px-6 py-2.5 rounded-full bg-[#1c1815] border border-[#facc15]/40 text-xs font-mono text-[#faf7f2] hover:bg-[#2b180d]"
                   >
@@ -204,6 +228,7 @@ export default function ContactSection() {
                             type="button"
                             key={svc}
                             onClick={() => toggleService(svc)}
+                            aria-pressed={isSelected}
                             className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                               isSelected
                                 ? "bg-[#facc15] text-[#0c0a09] shadow-md font-bold"
@@ -228,6 +253,7 @@ export default function ContactSection() {
                           type="button"
                           key={b}
                           onClick={() => setBudget(b)}
+                          aria-pressed={budget === b}
                           className={`py-2 px-3 rounded-xl text-xs font-bold transition-all text-center ${
                             budget === b
                               ? "bg-[#facc15] text-[#0c0a09] shadow-md"
@@ -304,6 +330,12 @@ export default function ContactSection() {
                     />
                   </div>
 
+                  {submitError && (
+                    <p role="alert" className="text-sm text-red-400">
+                      {submitError}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
                     disabled={submitting}
@@ -318,6 +350,9 @@ export default function ContactSection() {
                       </>
                     )}
                   </button>
+                  <p className="text-xs text-[#a8a29e] text-center">
+                    Your details are used only to respond to your project inquiry.
+                  </p>
                 </form>
               )}
             </div>

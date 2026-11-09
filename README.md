@@ -20,6 +20,18 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Contact inquiry form
+
+The contact form saves submissions to the `contact_inquiries` collection in MongoDB Atlas.
+
+1. Copy `.env.example` to `.env.local`.
+2. Set `MONGODB_URI` to your Atlas connection string and replace the username and password placeholders. URL-encode special characters in the username or password.
+3. Keep the database user restricted to the required database and never expose the URI through a `NEXT_PUBLIC_` variable or commit `.env.local`.
+4. Ensure the Atlas network access list allows connections from your deployment environment. For local development, add your current IP in Atlas.
+5. Restart the dev server after changing environment variables.
+
+The database name defaults to `delulogic`; set `MONGODB_DB` if you want to use another database.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
