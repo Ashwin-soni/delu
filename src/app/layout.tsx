@@ -1,4 +1,6 @@
+
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import OrganizationSchema from "./organization-schema";
@@ -14,34 +16,58 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Delulogic | Web Development & Paid Ad Growth Agency",
+  metadataBase: new URL("https://www.delulogic.in"),
+
+  title: {
+    default: "DeluLogic | Website Development & Digital Marketing",
+    template: "%s | DeluLogic",
+  },
+
   description:
-    "Delulogic is an elite web development, Google Ads & Meta Ads agency founded by Ashwin Soni and Anirudh Soni. We turn delusional ambition into high-converting logic.",
-  keywords: [
-    "Delulogic",
-    "Web Development Agency",
-    "Google Ads Management",
-    "Meta Ads Agency",
-    "Social Media Marketing",
-    "Next.js Development",
-    "Three.js Web Experiences",
-    "Ashwin Soni",
-    "Anirudh Soni",
+    "DeluLogic helps businesses grow with professional website development, Google Ads, Meta Ads and social media management. Turn your ideas into reality.",
+
+  applicationName: "DeluLogic",
+
+  authors: [
+    { name: "Ashwin Soni" },
+    { name: "Anirudh Soni" },
   ],
-  authors: [{ name: "Ashwin Soni" }, { name: "Anirudh Soni" }],
+
+  alternates: {
+    canonical: "/",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+
   openGraph: {
-    title: "Delulogic | Turn Delusion Into Scalable Logic",
+    title: "DeluLogic | Website Development & Digital Marketing",
     description:
-      "World-class Web Development & Performance Ads (Google Ads & Meta Ads) engineered for rapid global scale.",
+      "Transform your business with professional website development and performance marketing solutions.",
+    url: "https://www.delulogic.in/",
+    siteName: "DeluLogic",
+    locale: "en_IN",
     type: "website",
-    locale: "en_US",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "DeluLogic | Website Development & Digital Marketing",
+    description:
+      "Professional websites, Google Ads, Meta Ads and digital growth solutions.",
   },
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <html
@@ -49,8 +75,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} scroll-smooth dark`}
     >
       <body className="min-h-screen bg-[#0c0a09] text-[#faf7f2] font-sans antialiased selection:bg-[#facc15] selection:text-[#0c0a09]">
-        {children}
         <OrganizationSchema />
+        {children}
       </body>
     </html>
   );
